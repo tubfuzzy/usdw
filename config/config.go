@@ -19,6 +19,8 @@ type Configuration struct {
 	Xero          XeroConfig         `envconfig:"XERO"`
 }
 
+var XeroOAuthConfig *oauth2.Config
+
 type ServerConfig struct {
 	Name                string        `envconfig:"NAME" default:"MyServer"`
 	AppVersion          string        `envconfig:"APP_VERSION" default:"1.0.0"`
@@ -72,18 +74,8 @@ type RedisClusterConfig struct {
 }
 
 type XeroConfig struct {
-	TenantId string `envconfig:"TENANT_ID"`
-}
-
-var XeroOAuthConfig = &oauth2.Config{
-	ClientID:     "YOUR_CLIENT_ID",
-	ClientSecret: "YOUR_CLIENT_SECRET",
-	RedirectURL:  "http://localhost:3000/oauth/callback",
-	Scopes:       []string{"offline_access", "bankfeeds"},
-	Endpoint: oauth2.Endpoint{
-		AuthURL:  "https://login.xero.com/identity/connect/authorize",
-		TokenURL: "https://identity.xero.com/connect/token",
-	},
+	ClientID     string `envconfig:"CLIENT_ID"`
+	ClientSecret string `envconfig:"CLIENT_SECRET"`
 }
 
 func NewConfig() (*Configuration, error) {
@@ -96,6 +88,17 @@ func NewConfig() (*Configuration, error) {
 	err = envconfig.Process("", &cfg)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load configuration from environment variables: %v", err)
+	}
+
+	XeroOAuthConfig = &oauth2.Config{
+		ClientID:     cfg.Xero.ClientID,
+		ClientSecret: cfg.Xero.ClientSecret,
+		RedirectURL:  "http://localhost:3000/oauth/callback",
+		Scopes:       []string{"offline_access", "bankfeeds"},
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  "https://login.xero.com/identity/connect/authorize",
+			TokenURL: "https://identity.xero.com/connect/token",
+		},
 	}
 
 	return &cfg, nil
