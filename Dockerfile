@@ -1,4 +1,4 @@
-Dockerfile.lib.matador.ais.co.thARG GO_VERSION=1.22-alpine3.20
+ARG GO_VERSION=1.22-alpine3.20
 FROM golang:${GO_VERSION} AS builder
 
 RUN mkdir /app
