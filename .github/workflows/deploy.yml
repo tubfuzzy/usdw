@@ -3,7 +3,7 @@ name: Deploy Docker Container to Azure App Service
 on:
   push:
     tags:
-      - "v*.*.*"  # Triggers when pushing a tag like v1.0.0, v2.1.5, etc.
+      - "v*.*.*"
 
 jobs:
   build-and-deploy:
@@ -26,6 +26,11 @@ jobs:
         run: |
           docker build -t theeraprased/usdw:${{ env.VERSION }} .
           docker push theeraprased/usdw:${{ env.VERSION }}
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
