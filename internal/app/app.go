@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/go-resty/resty/v2"
 	"usdw/config"
 	"usdw/pkg/cache"
 	"usdw/pkg/db"
@@ -8,15 +9,14 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
-	exampleusecasehandler "usdw/internal/usecase/exampleusecase/controller/http"
-	exampleusecaserepositorydb "usdw/internal/usecase/exampleusecase/repository"
-	exampleusecaseservice "usdw/internal/usecase/exampleusecase/service"
+	bankfeedhandler "usdw/internal/usecase/bankfeed/controller/http"
+	bankfeedrepository "usdw/internal/usecase/bankfeed/repository"
+	bankfeedservice "usdw/internal/usecase/bankfeed/service"
 )
 
-func NewApplication(app fiber.Router, logger logger.Logger, db *db.DB, cache cache.Engine, config *config.Configuration) {
-
-	exampleRepository := exampleusecaserepositorydb.NewExampleRepository(db, logger, config)
-	exampleService := exampleusecaseservice.NewExampleService(exampleRepository, config, cache, logger)
-	exampleHandler := exampleusecasehandler.NewExampleHandler(exampleService, config)
-	exampleHandler.InitRoute(app)
+func NewApplication(app fiber.Router, logger logger.Logger, client *resty.Client, _ *db.DB, cache cache.Engine, config *config.Configuration) {
+	bankFeedRepository := bankfeedrepository.NewBankFeedRepository(client, config)
+	bankFeedService := bankfeedservice.NewBankFeedService(bankFeedRepository, config, cache, logger)
+	bankFeedHandler := bankfeedhandler.NewBankFeedHandler(bankFeedService, config)
+	bankFeedHandler.InitRoute(app)
 }

@@ -2,14 +2,15 @@ package server
 
 import (
 	"encoding/json"
-	"os"
-	"time"
-
+	"github.com/go-resty/resty/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/etag"
 	fiberLog "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"os"
+	"time"
+	"usdw/pkg/middleware"
 
 	"usdw/config"
 
@@ -43,6 +44,7 @@ func New() (*Server, error) {
 		return nil, err
 	}
 	// db := &db.DB{}
+
 	app := NewFiberApp(conf, logger, cacheEngine, db)
 
 	return &Server{
@@ -72,6 +74,7 @@ func NewFiberApp(
 	app.Use(cors.New())
 	app.Use(etag.New())
 	app.Use(recover.New())
+	app.Use(middleware.RequestIDMiddleware())
 
 	app.Use(fiberLog.New(fiberLog.Config{
 		Next:         nil,
@@ -85,8 +88,8 @@ func NewFiberApp(
 
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
-
-	apiv1.NewApplication(v1, logger, db, cacheEngine, conf)
+	client := resty.New()
+	apiv1.NewApplication(v1, logger, client, db, cacheEngine, conf)
 
 	app.Get("/healthz", func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{

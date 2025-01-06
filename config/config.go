@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"golang.org/x/oauth2"
 	"os"
 	"time"
 
@@ -15,6 +16,7 @@ type Configuration struct {
 	Logger        Logger             `envconfig:"LOGGER"`
 	Redis         RedisConfig        `envconfig:"REDIS"`
 	RedisCluster  RedisClusterConfig `envconfig:"REDIS_CLUSTER"`
+	Xero          XeroConfig         `envconfig:"XERO"`
 }
 
 type ServerConfig struct {
@@ -67,6 +69,21 @@ type RedisClusterConfig struct {
 	PoolTimeout int    `envconfig:"REDIS_CLUSTER_POOL_TIMEOUT"`
 	Password    string `envconfig:"REDIS_CLUSTER_PASSWORD"`
 	DB          int    `envconfig:"REDIS_CLUSTER_DB"`
+}
+
+type XeroConfig struct {
+	TenantId string `envconfig:"TENANT_ID"`
+}
+
+var XeroOAuthConfig = &oauth2.Config{
+	ClientID:     "YOUR_CLIENT_ID",
+	ClientSecret: "YOUR_CLIENT_SECRET",
+	RedirectURL:  "http://localhost:3000/oauth/callback",
+	Scopes:       []string{"offline_access", "bankfeeds"},
+	Endpoint: oauth2.Endpoint{
+		AuthURL:  "https://login.xero.com/identity/connect/authorize",
+		TokenURL: "https://identity.xero.com/connect/token",
+	},
 }
 
 func NewConfig() (*Configuration, error) {

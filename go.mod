@@ -3,13 +3,14 @@ module usdw
 go 1.23.2
 
 require (
-	git.matador.ais.co.th/esport-development-team/common/go-common-sdk v1.0.0
+	github.com/go-resty/resty/v2 v2.16.2
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/zap v1.27.0
+	golang.org/x/oauth2 v0.24.0
 	gorm.io/gorm v1.25.12
 )
 
@@ -29,6 +30,7 @@ require (
 	github.com/valyala/fasthttp v1.51.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/net v0.27.0 // indirect
+	golang.org/x/sys v0.22.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
