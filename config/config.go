@@ -76,6 +76,7 @@ type RedisClusterConfig struct {
 type XeroConfig struct {
 	ClientID     string `envconfig:"CLIENT_ID"`
 	ClientSecret string `envconfig:"CLIENT_SECRET"`
+	RedirectURL  string `envconfig:"REDIRECT_URL" default:"https://usdw-g8afh6cmhkf3dgcb.southeastasia-01.azurewebsites.net/oauth/callback"`
 }
 
 func NewConfig() (*Configuration, error) {
@@ -93,7 +94,7 @@ func NewConfig() (*Configuration, error) {
 	XeroOAuthConfig = &oauth2.Config{
 		ClientID:     cfg.Xero.ClientID,
 		ClientSecret: cfg.Xero.ClientSecret,
-		RedirectURL:  "http://localhost:3000/oauth/callback",
+		RedirectURL:  cfg.Xero.RedirectURL,
 		Scopes:       []string{"offline_access", "bankfeeds"},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  "https://login.xero.com/identity/connect/authorize",

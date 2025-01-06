@@ -12,6 +12,8 @@ import (
 	bankfeedhandler "usdw/internal/usecase/bankfeed/controller/http"
 	bankfeedrepository "usdw/internal/usecase/bankfeed/repository"
 	bankfeedservice "usdw/internal/usecase/bankfeed/service"
+
+	xeroauthhandler "usdw/internal/usecase/xero/controller/http"
 )
 
 func NewApplication(app fiber.Router, logger logger.Logger, client *resty.Client, _ *db.DB, cache cache.Engine, config *config.Configuration) {
@@ -19,4 +21,6 @@ func NewApplication(app fiber.Router, logger logger.Logger, client *resty.Client
 	bankFeedService := bankfeedservice.NewBankFeedService(bankFeedRepository, config, cache, logger)
 	bankFeedHandler := bankfeedhandler.NewBankFeedHandler(bankFeedService, config)
 	bankFeedHandler.InitRoute(app)
+
+	xeroauthhandler.NewXeroAuthHandler(app)
 }
