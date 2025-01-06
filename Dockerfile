@@ -13,5 +13,4 @@ WORKDIR /app
 COPY --from=builder /app .
 ENV TZ=Asia/Bangkok
 
-EXPOSE 3000
 CMD ["/app/main"]
