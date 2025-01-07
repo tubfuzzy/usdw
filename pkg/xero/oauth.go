@@ -53,14 +53,13 @@ func GetAccessToken(ctx context.Context) (string, error) {
 func refreshAccessToken(ctx context.Context) (*oauth2.Token, error) {
 	client := resty.New()
 
-	//logger.Info("Requesting new access token from Xero...")
-
 	resp, err := client.R().
 		SetContext(ctx).
 		SetFormData(map[string]string{
 			"grant_type":    "client_credentials",
 			"client_id":     config.XeroOAuthConfig.ClientID,
 			"client_secret": config.XeroOAuthConfig.ClientSecret,
+			//"scope":         "bankfeeds offline_access",
 		}).
 		Post(config.XeroOAuthConfig.Endpoint.TokenURL)
 
@@ -68,15 +67,33 @@ func refreshAccessToken(ctx context.Context) (*oauth2.Token, error) {
 		return nil, fmt.Errorf("failed to refresh access token: %w", err)
 	}
 
-	// Parse the response
-	var token oauth2.Token
-	err = json.Unmarshal(resp.Body(), &token)
+	// Debugging: Print the raw response from Xero
+	fmt.Println("Xero Token Response:", string(resp.Body()))
+
+	// Create a struct to match the response
+	var rawToken struct {
+		AccessToken string `json:"access_token"`
+		ExpiresIn   int    `json:"expires_in"`
+		TokenType   string `json:"token_type"`
+		Scope       string `json:"scope"`
+	}
+
+	// Parse the response correctly
+	err = json.Unmarshal(resp.Body(), &rawToken)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse token response: %w", err)
 	}
 
-	token.Expiry = time.Now().Add(time.Duration(token.Expiry.Unix()) * time.Second)
-	//logger.Info("New Xero access token retrieved successfully.")
+	// ✅ Correctly set expiry time based on `expires_in`
+	token := &oauth2.Token{
+		AccessToken: rawToken.AccessToken,
+		TokenType:   rawToken.TokenType,
+		Expiry:      time.Now().Add(time.Duration(rawToken.ExpiresIn) * time.Second),
+	}
 
-	return &token, nil
+	// Debugging: Print new expiry time and scope
+	fmt.Println("New Access Token Expiry:", token.Expiry)
+	fmt.Println("New Access Token Scope:", rawToken.Scope)
+
+	return token, nil
 }

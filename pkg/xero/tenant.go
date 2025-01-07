@@ -38,7 +38,6 @@ func GetXeroTenantID(ctx context.Context) (string, error) {
 	url := "https://api.xero.com/connections"
 
 	//logger.Info("Fetching Xero tenant ID...")
-
 	resp, err := client.R().
 		SetContext(ctx).
 		SetHeader("Authorization", "Bearer "+accessToken).
