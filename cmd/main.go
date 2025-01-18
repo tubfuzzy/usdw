@@ -13,6 +13,17 @@ func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 }
 
+// @title USDW API
+// @version 1.0
+// @description API documentation for USDW application.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @host localhost:3000
+// @BasePath /api/v1
 func main() {
 	serv, err := server.New()
 	if err != nil {

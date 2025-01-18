@@ -47,7 +47,8 @@ func GetXeroTenantID(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to call Xero Connections API: %w", err)
 	}
-
+	
+	fmt.Println("Xero Tenants Response:", string(resp.Body()))
 	// Parse response
 	var connections []XeroConnection
 	err = json.Unmarshal(resp.Body(), &connections)

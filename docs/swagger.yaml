@@ -1,0 +1,332 @@
+basePath: /api/v1
+definitions:
+  domain.Balance:
+    properties:
+      amount:
+        type: number
+      creditDebitIndicator:
+        type: string
+    type: object
+  domain.Connection:
+    properties:
+      accountId:
+        type: string
+      accountName:
+        type: string
+      accountNumber:
+        type: string
+      accountToken:
+        type: string
+      accountType:
+        type: string
+      currency:
+        type: string
+      id:
+        type: string
+    type: object
+  domain.ConnectionsResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/domain.Connection'
+        type: array
+      pagination:
+        $ref: '#/definitions/domain.Pagination'
+    type: object
+  domain.CreateConnectionResult:
+    properties:
+      accountToken:
+        type: string
+      error:
+        $ref: '#/definitions/domain.FeedError'
+      id:
+        type: string
+      status:
+        type: string
+    type: object
+  domain.CreateConnectionsResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/domain.CreateConnectionResult'
+        type: array
+    type: object
+  domain.DeleteResult:
+    properties:
+      accountToken:
+        type: string
+      error:
+        $ref: '#/definitions/domain.FeedError'
+      id:
+        type: string
+      status:
+        type: string
+    type: object
+  domain.FeedError:
+    properties:
+      detail:
+        type: string
+      status:
+        type: integer
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  domain.GetStatementsResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/domain.StatementResult'
+        type: array
+      pagination:
+        $ref: '#/definitions/domain.Pagination'
+    type: object
+  domain.Pagination:
+    properties:
+      itemCount:
+        type: integer
+      page:
+        type: integer
+      pageCount:
+        type: integer
+      pageSize:
+        type: integer
+    type: object
+  domain.PostStatementResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/domain.StatementResult'
+        type: array
+    type: object
+  domain.StatementResult:
+    properties:
+      endBalance:
+        $ref: '#/definitions/domain.Balance'
+      endDate:
+        type: string
+      errors:
+        items:
+          $ref: '#/definitions/domain.FeedError'
+        type: array
+      feedConnectionId:
+        type: string
+      id:
+        type: string
+      startBalance:
+        $ref: '#/definitions/domain.Balance'
+      startDate:
+        type: string
+      statementLineCount:
+        type: string
+      status:
+        type: string
+    type: object
+  exception.ErrorResponse:
+    properties:
+      code:
+        type: string
+      data: {}
+      error: {}
+      message:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: API documentation for USDW application.
+  termsOfService: http://swagger.io/terms/
+  title: USDW API
+  version: "1.0"
+paths:
+  /feed-connections:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a paginated list of feed connections
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.ConnectionsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.ErrorResponse'
+      summary: Get all feed connections
+      tags:
+      - FeedConnections
+    post:
+      consumes:
+      - application/json
+      description: Creates a new feed connection for bank feeds
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.CreateConnectionsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/exception.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.ErrorResponse'
+      summary: Create a new feed connection
+      tags:
+      - FeedConnections
+  /feed-connections/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a feed connection by its ID
+      parameters:
+      - description: Feed Connection ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.DeleteResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.ErrorResponse'
+      summary: Delete a feed connection
+      tags:
+      - FeedConnections
+    get:
+      consumes:
+      - application/json
+      description: Retrieves details of a feed connection by its ID
+      parameters:
+      - description: Feed Connection ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Connection'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/exception.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.ErrorResponse'
+      summary: Get feed connection by ID
+      tags:
+      - FeedConnections
+  /statements:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a paginated list of statements
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetStatementsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/exception.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.ErrorResponse'
+      summary: Get all statements
+      tags:
+      - Statements
+    post:
+      consumes:
+      - application/json
+      description: Creates a new statement with details
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/domain.PostStatementResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/exception.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.ErrorResponse'
+      summary: Create a new statement
+      tags:
+      - Statements
+  /statements/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves details of a statement by its ID
+      parameters:
+      - description: Statement ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.StatementResult'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/exception.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.ErrorResponse'
+      summary: Get statement by ID
+      tags:
+      - Statements
+swagger: "2.0"
