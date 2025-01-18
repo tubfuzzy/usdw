@@ -29,6 +29,15 @@ func (h *BankFeedHandler) InitRoute(app fiber.Router) {
 	app.Get("/statements/:id", h.GetStatementByID)
 }
 
+// @Summary Create a new feed connection
+// @Description Creates a new feed connection for bank feeds
+// @Tags FeedConnections
+// @Accept json
+// @Produce json
+// @Success 201 {object} domain.CreateConnectionsResponse
+// @Failure 400 {object} exception.ErrorResponse
+// @Failure 500 {object} exception.ErrorResponse
+// @Router /feed-connections [post]
 func (h *BankFeedHandler) CreateConnections(c *fiber.Ctx) error {
 	var request domain.CreateConnectionsRequest
 	if err := c.BodyParser(&request); err != nil {
@@ -43,6 +52,16 @@ func (h *BankFeedHandler) CreateConnections(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
+// @Summary Get all feed connections
+// @Description Retrieves a paginated list of feed connections
+// @Tags FeedConnections
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number"
+// @Param pageSize query int false "Number of items per page"
+// @Success 200 {object} domain.ConnectionsResponse
+// @Failure 500 {object} exception.ErrorResponse
+// @Router /feed-connections [get]
 func (h *BankFeedHandler) GetConnections(c *fiber.Ctx) error {
 	page, _ := strconv.Atoi(c.Query("page", "1"))
 	pageSize, _ := strconv.Atoi(c.Query("pageSize", "20"))
@@ -55,6 +74,16 @@ func (h *BankFeedHandler) GetConnections(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
+// @Summary Get feed connection by ID
+// @Description Retrieves details of a feed connection by its ID
+// @Tags FeedConnections
+// @Accept json
+// @Produce json
+// @Param id path string true "Feed Connection ID"
+// @Success 200 {object} domain.Connection
+// @Failure 404 {object} exception.ErrorResponse
+// @Failure 500 {object} exception.ErrorResponse
+// @Router /feed-connections/{id} [get]
 func (h *BankFeedHandler) GetConnectionByID(c *fiber.Ctx) error {
 	feedConnectionID := c.Params("id")
 
@@ -69,6 +98,15 @@ func (h *BankFeedHandler) GetConnectionByID(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
+// @Summary Delete a feed connection
+// @Description Deletes a feed connection by its ID
+// @Tags FeedConnections
+// @Accept json
+// @Produce json
+// @Param id path string true "Feed Connection ID"
+// @Success 200 {object} domain.DeleteResult
+// @Failure 500 {object} exception.ErrorResponse
+// @Router /feed-connections/{id} [delete]
 func (h *BankFeedHandler) DeleteFeedConnection(c *fiber.Ctx) error {
 	feedConnectionID := c.Params("id")
 
@@ -80,6 +118,15 @@ func (h *BankFeedHandler) DeleteFeedConnection(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
+// @Summary Create a new statement
+// @Description Creates a new statement with details
+// @Tags Statements
+// @Accept json
+// @Produce json
+// @Success 202 {object} domain.PostStatementResponse
+// @Failure 400 {object} exception.ErrorResponse
+// @Failure 500 {object} exception.ErrorResponse
+// @Router /statements [post]
 func (h *BankFeedHandler) PostStatements(c *fiber.Ctx) error {
 	var request domain.PostStatementRequest
 
@@ -101,6 +148,17 @@ func (h *BankFeedHandler) PostStatements(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusAccepted).JSON(response)
 }
 
+// @Summary Get all statements
+// @Description Retrieves a paginated list of statements
+// @Tags Statements
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number"
+// @Param pageSize query int false "Number of items per page"
+// @Success 200 {object} domain.GetStatementsResponse
+// @Failure 400 {object} exception.ErrorResponse
+// @Failure 500 {object} exception.ErrorResponse
+// @Router /statements [get]
 func (h *BankFeedHandler) GetStatements(c *fiber.Ctx) error {
 	// Parse optional query parameters
 	page, err := strconv.Atoi(c.Query("page", "1"))
@@ -125,6 +183,16 @@ func (h *BankFeedHandler) GetStatements(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
+// @Summary Get statement by ID
+// @Description Retrieves details of a statement by its ID
+// @Tags Statements
+// @Accept json
+// @Produce json
+// @Param id path string true "Statement ID"
+// @Success 200 {object} domain.StatementResult
+// @Failure 404 {object} exception.ErrorResponse
+// @Failure 500 {object} exception.ErrorResponse
+// @Router /statements/{id} [get]
 func (h *BankFeedHandler) GetStatementByID(c *fiber.Ctx) error {
 	statementID := c.Params("id")
 

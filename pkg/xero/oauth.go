@@ -59,7 +59,7 @@ func refreshAccessToken(ctx context.Context) (*oauth2.Token, error) {
 			"grant_type":    "client_credentials",
 			"client_id":     config.XeroOAuthConfig.ClientID,
 			"client_secret": config.XeroOAuthConfig.ClientSecret,
-			//"scope":         "bankfeeds offline_access",
+			//"scope":         "offline_access",
 		}).
 		Post(config.XeroOAuthConfig.Endpoint.TokenURL)
 

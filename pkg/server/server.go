@@ -8,12 +8,14 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/etag"
 	fiberLog "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/swagger"
 	"os"
 	"time"
 	"usdw/pkg/middleware"
 
 	"usdw/config"
 
+	_ "usdw/docs"
 	apiv1 "usdw/internal/app"
 	cachePkg "usdw/pkg/cache"
 	"usdw/pkg/common/exception"
@@ -85,6 +87,8 @@ func NewFiberApp(
 		TimeInterval: 500 * time.Millisecond,
 		Output:       os.Stdout,
 	}))
+
+	app.Get("/docs/*", swagger.HandlerDefault)
 
 	api := app.Group("/api")
 	v1 := api.Group("/v1")

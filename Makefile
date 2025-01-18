@@ -7,5 +7,6 @@ unittest:
 lint:
 	golangci-lint run
 
+swagger-gen:
+	swag init --dir ./cmd,./pkg/common/exception,./internal --output ./docs
 
-https://gitlab.sefthost/group/subgroup/package?go-get=1
